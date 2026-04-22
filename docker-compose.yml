@@ -15,7 +15,7 @@ services:
   # Servicio de tu API Django
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
     volumes:
       # Hot-Reload: Mapeamos la carpeta actual para que los cambios de código se reflejen sin reiniciar
       - .:/app

@@ -26,5 +26,5 @@ COPY . /app/
 EXPOSE 8000
 
 # 8. Comando por defecto al iniciar el contenedor
-# Importante: 0.0.0.0 permite que el contenedor sea accesible desde fuera
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Ejecutamos migraciones antes de levantar el servidor
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"]
