@@ -1,11 +1,13 @@
+from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tienda_app.infra.factories import PaymentFactory
+from tienda_app.models import Libro
 from tienda_app.services import CompraService
 
-from .serializers import OrdenInputSerializer
+from .serializers import LibroSerializer, OrdenInputSerializer
 
 
 class CompraAPIView(APIView):
@@ -14,6 +16,21 @@ class CompraAPIView(APIView):
     POST /api/v1/comprar/
     Payload: {"libro_id": 1, "direccion_envio": "Calle 123", "cantidad": 1}
     """
+
+    def get(self, request):
+        libros = Libro.objects.all().order_by('id')
+        return Response(
+            {
+                'mensaje': 'Use POST para procesar una compra.',
+                'payload_ejemplo': {
+                    'libro_id': 1,
+                    'direccion_envio': 'Calle 123',
+                    'cantidad': 1,
+                },
+                'libros_disponibles': LibroSerializer(libros, many=True).data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def post(self, request):
         serializer = OrdenInputSerializer(data=request.data)
@@ -41,6 +58,8 @@ class CompraAPIView(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
+        except Http404 as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_409_CONFLICT)
         except Exception:
