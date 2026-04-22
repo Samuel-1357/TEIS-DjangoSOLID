@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -36,3 +37,7 @@ class CompraView(View):
             )
         except (ValueError, Exception) as e:
             return render(request, self.template_name, {'error': str(e)}, status=400)
+
+
+def public_home(request):
+    return HttpResponse('Tienda API activa. Endpoints: /compra/<id>/ y /api/v1/comprar/', content_type='text/plain')
