@@ -5,17 +5,17 @@ app = Flask(__name__)
 
 @app.route('/api/v2/comprar', methods=['POST'])
 def realizar_compra():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Simulación de lógica de negocio extraída
-    producto_id = data.get('producto_id')
+    producto_id = data.get('producto_id') or data.get('libro_id')
     cantidad = data.get('cantidad', 1)
 
     if not producto_id:
         return jsonify({"error": "Falta el ID del producto"}), 400
 
     return jsonify({
-        "mensaje": "Compra procesada exitosamente por el Microservicio Flask (v2)",
+        "mensaje": "Compra procesada exitosamente por el Microservicio Flask",
         "producto_id": producto_id,
         "cantidad": cantidad,
         "status": "Aprobado"
